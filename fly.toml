@@ -1,0 +1,39 @@
+# fly.toml file generated for kevinisageek-uptime-kuma on 2023-10-05T07:51:18+01:00
+
+app = "kevinisageek-uptime-kuma"
+kill_signal = "SIGINT"
+kill_timeout = 5
+primary_region = "mad"
+processes = []
+
+[build]
+  image = "louislam/uptime-kuma:latest"
+
+[env]
+  port = "3001"
+
+[experimental]
+  allowed_public_ports = []
+  auto_rollback = true
+
+[mounts]
+  destination = "/app/data"
+  source = "volume_uptime_kuma"
+
+[[services]]
+  internal_port = 3001
+  processes = ["app"]
+  protocol = "tcp"
+  [services.concurrency]
+    hard_limit = 25
+    soft_limit = 20
+    type = "connections"
+
+  [[services.ports]]
+    force_https = true
+    handlers = ["http"]
+    port = 80
+
+  [[services.ports]]
+    handlers = ["tls", "http"]
+    port = 443
